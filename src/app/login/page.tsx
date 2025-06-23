@@ -1,3 +1,4 @@
+import { login } from "@/actions/user";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
@@ -6,7 +7,7 @@ import Link from "next/link";
 const LoginPage = () => {
   return (
     <div className="mt-10 max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white border border-[#121212]  dark:bg-black">
-      <form action="" className="my-8 space-y-2">
+      <form action={login} className="my-8 space-y-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="email">Email Address</Label>
           <Input
