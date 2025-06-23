@@ -4,6 +4,7 @@ import connectDB from "@/lib/db";
 import { User } from "@/models/user";
 import { redirect } from "next/navigation";
 import { hash } from "bcryptjs";
+import { CredentialsSignin } from "next-auth";
 import { signIn } from "@/auth";
 
 const login = async (formData: FormData) => {
@@ -18,8 +19,8 @@ const login = async (formData: FormData) => {
       password,
     });
   } catch (error) {
-    console.error("Login failed:", error);
-    throw new Error("Login failed. Please check your credentials.");
+    console.error("Login error:", error);
+    throw new Error("Invalid email or password");
   }
   redirect("/");
 };
@@ -31,29 +32,26 @@ const register = async (formData: FormData) => {
   const password = formData.get("password") as string;
 
   if (!firstName || !lastName || !email || !password) {
-    throw new Error("All fields are required");
+    throw new Error("Please fill all fields");
   }
 
   await connectDB();
 
-  // existing user check
+  // existing user
   const existingUser = await User.findOne({ email });
-  if (existingUser) {
-    throw new Error("User already exists");
-  }
+  if (existingUser) throw new Error("User already exists");
 
   const hashedPassword = await hash(password, 12);
 
-  await User.create({
-    firstName,
-    lastName,
-    email,
-    password: hashedPassword,
-  });
-
-  console.log("User registered successfully");
-
+  await User.create({ firstName, lastName, email, password: hashedPassword });
+  console.log(`User created successfully 🥂`);
   redirect("/login");
 };
 
-export { register, login };
+const fetchAllUsers = async () => {
+  await connectDB();
+  const users = await User.find({});
+  return users;
+};
+
+export { register, login, fetchAllUsers };
