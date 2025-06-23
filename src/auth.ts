@@ -1,11 +1,16 @@
 import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import GitHub from "next-auth/providers/github";
 import connectDB from "./lib/db";
 import { User } from "./models/user";
 import { compare } from "bcryptjs";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
+    GitHub({
+      clientId: process.env.GITHUB_CLIENT_ID ,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET ,
+    }),
     Credentials({
       name: "Credentials",
 
